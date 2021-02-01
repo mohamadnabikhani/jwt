@@ -1,4 +1,4 @@
-import { ModuleMetadata, Type } from '@nestjs/common/interfaces';
+import { ModuleMetadata, Abstract, Type } from '@nestjs/common/interfaces';
 import * as jwt from 'jsonwebtoken';
 
 export enum JwtSecretRequestType {
@@ -43,3 +43,28 @@ export interface JwtVerifyOptions extends jwt.VerifyOptions {
   secret?: string | Buffer;
   publicKey?: string | Buffer;
 }
+
+export interface IJwtService {
+  sign(payload: string | Buffer | object, options?: JwtSignOptions): string;
+  signAsync(
+    payload: string | Buffer | object,
+    options?: JwtSignOptions
+  ): Promise<string>;
+  verify<T extends object = any>(token: string, options?: JwtVerifyOptions): T;
+  verifyAsync<T extends object = any>(
+    token: string,
+    options?: JwtVerifyOptions
+  ): Promise<T>;
+  decode(
+    token: string,
+    options?: jwt.DecodeOptions
+  ): null | { [key: string]: any } | string;
+}
+
+export interface MultipleProviders {
+  provide: string | symbol | Type<any> | Abstract<any> | Function;
+  useFactory?: (...args: any[]) => IJwtService;
+  inject?: any[];
+}
+
+export type Provide = string | symbol | Type<any> | Abstract<any> | Function;

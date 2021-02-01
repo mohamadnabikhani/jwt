@@ -1,22 +1,47 @@
-import { DynamicModule, Module, Provider } from '@nestjs/common';
+import {
+  DynamicModule,
+  Module,
+  Provider,
+  FactoryProvider
+} from '@nestjs/common';
 import {
   JwtModuleAsyncOptions,
   JwtModuleOptions,
-  JwtOptionsFactory
+  JwtOptionsFactory,
+  MultipleProviders,
+  IJwtService,
+  Provide
 } from './interfaces/jwt-module-options.interface';
 import { JWT_MODULE_OPTIONS } from './jwt.constants';
+import { JwtServiceFactory } from './core/jwt.service';
 import { createJwtProvider } from './jwt.providers';
 import { JwtService } from './jwt.service';
+import { JwtServiceCore } from './core/jwt.service';
 
 @Module({
-  providers: [JwtService],
-  exports: [JwtService]
+  //   providers: [JwtService],
+  //   exports: [JwtService]
 })
 export class JwtModule {
   static register(options: JwtModuleOptions): DynamicModule {
     return {
       module: JwtModule,
-      providers: createJwtProvider(options)
+      providers: [...createJwtProvider(options), JwtService],
+      exports: [JwtService]
+    };
+  }
+
+  static registerAsyncMultiple(
+    multiplesFactoryProvider: FactoryProvider<JwtServiceFactory>[]
+  ): DynamicModule {
+    let exports: Provide[] = [];
+    for (let factoryProvider of multiplesFactoryProvider) {
+      exports.push(factoryProvider.provide);
+    }
+    return {
+      module: JwtModule,
+      providers: multiplesFactoryProvider,
+      exports
     };
   }
 
@@ -24,7 +49,8 @@ export class JwtModule {
     return {
       module: JwtModule,
       imports: options.imports || [],
-      providers: this.createAsyncProviders(options)
+      providers: [...this.createAsyncProviders(options), JwtService],
+      exports: [JwtService]
     };
   }
 
