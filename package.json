@@ -1,8 +1,8 @@
 {
-  "name": "@nestjs/jwt",
-  "version": "7.2.0",
+  "name": "@nestjs/multijwt",
+  "version": "1.0.0",
   "description": "Nest - modern, fast, powerful node.js web framework (@jwt)",
-  "author": "Kamil Mysliwiec",
+  "author": "Kamil Mysliwiec, Mohammad Nabikhani",
   "license": "MIT",
   "scripts": {
     "format": "prettier --write \"**/*.ts\"",
@@ -59,6 +59,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nestjs/jwt"
+    "url": "https://github.com/mohamadnabikhani/jwt"
   }
 }
